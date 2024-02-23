@@ -2,12 +2,14 @@
 
 #include <string>
 
+using namespace hi;
+using namespace hi::parser::markup;
+
 int main(int argc, char* argv[]) 
 {
-    std::string filename = "markup.html";
-    
-    hi::HTML parser(filename);
-      
+    parser::Parser::Pointer xml = parser::Create(DocumentType::XML);
+    xml->read("text.xml");
+    xml->getDOM().getRoot()->ge
 
     return 0;
 }

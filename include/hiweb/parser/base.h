@@ -24,7 +24,8 @@
 #include <map>
  
 
-namespace hi::parser
+
+namespace hi::web::impl
 {
     /**
      * @class Tag
@@ -174,11 +175,13 @@ namespace hi::parser
      * functionality required for reading documents, writing tags, finding tags, and
      * accessing the DOM. Implementations should provide specific parsing logic.
      */
-    class ParserBase
+    class Parser
     {
     public:
-        ParserBase() noexcept = default;
-        virtual ~ParserBase() = default;
+        using Pointer = std::unique_ptr<Parser>;
+
+        Parser() noexcept = default;
+        virtual ~Parser() = default;
 
         /**
          * @brief Reads and parses a document from the specified file.

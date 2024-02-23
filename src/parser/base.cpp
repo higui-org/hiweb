@@ -1,17 +1,17 @@
-#include "higui/parser/base.h"
+#include "hiweb/parser/base.h"
 
 namespace hi::parser
 {
 
 
 /*
-        HIML methods
+        Parser methods
     (no getters/setters)
             |
             |
            \ /
 */
-bool ParserBase::write(const Tag::Pointer& where, const Tag& tag) {
+bool Parser::write(const Tag::Pointer& where, const Tag& tag) {
     if (!where) return false;
 
     Tag::Pointer newTag = std::make_shared<Tag>(tag);
@@ -20,19 +20,19 @@ bool ParserBase::write(const Tag::Pointer& where, const Tag& tag) {
     return true;
 }
 
-Tag::Pointer ParserBase::find(const std::string& id) const
+Tag::Pointer Parser::find(const std::string& id) const
 {
     return findRecursive(dom.getRoot(), id);
 }
 
-std::list<Tag::Pointer> ParserBase::findAll(const std::string& class_val) const
+std::list<Tag::Pointer> Parser::findAll(const std::string& class_val) const
 {
     std::list<Tag::Pointer> result;
     findAllRecursive(dom.getRoot(), class_val, result);
     return result;
 }
 
-Tag::Pointer ParserBase::findRecursive(Tag::Pointer current, const std::string& id) {
+Tag::Pointer Parser::findRecursive(Tag::Pointer current, const std::string& id) {
     if (!current) return nullptr;
 
     if (current->getId() == id) return current;
@@ -45,7 +45,7 @@ Tag::Pointer ParserBase::findRecursive(Tag::Pointer current, const std::string& 
     return nullptr;
 }
 
-void ParserBase::findAllRecursive(
+void Parser::findAllRecursive(
     Tag::Pointer current,
     const std::string& class_val,
     std::list<Tag::Pointer>& result) {

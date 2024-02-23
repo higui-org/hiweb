@@ -5,9 +5,9 @@
 
 #include <string>
 
-namespace hi::parser::html
+namespace hi::web::impl::html
 {
-	class HTML : public ParserBase
+	class HTML : public Parser
 	{
 	public:
 		HTML() noexcept = default;

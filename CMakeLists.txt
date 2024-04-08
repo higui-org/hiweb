@@ -1,57 +1,59 @@
+
+# cmake version, c++ standard
 cmake_minimum_required(VERSION 3.0)
-
-# hiweb
-set(PROJECT_NAME hiweb)
-project(${PROJECT_NAME} VERSION 24.2)
-
 set(CMAKE_CXX_STANDARD 17)
 
-# Sources
+# project name, version
+set(PROJECT_NAME hiweb)
+project(${PROJECT_NAME} VERSION 24.4)
+
+# -----------------------------
+#          FEATURES
+option(PARSING_SYSTEM_ONLY "Build parsing system ONLY" OFF)
+
+if(PARSING_SYSTEM_ONLY)
+    add_definitions(-DHIWEB_FEATURES_PARSING_SYSTEM_ONLY)
+endif()
+# -----------------------------
+
+
+
+
+# -----------------------------
+#          SOURCES
 set(SOURCES
     src/main.cpp
+
+    src/web.cpp
+    src/dom.cpp
     src/parser/base.cpp
 
-    # HTML
-    src/parser/html/html.cpp
+    # Markups
+    src/parser/html/html.cpp    # html
+    src/parser/xhtml/xhtml.cpp  # xhtml
+    src/parser/xml/xml.cpp      # xml
 
-    # XHTML
-    src/parser/xhtml/xhtml.cpp
-
-    # XML
-    src/parser/xml/xml.cpp
-
-    # CSS
-    src/parser/css/css.cpp
+    # Styles
+    src/parser/css/css.cpp      # css
 )
-
-# -----------------------------
-#          INCLUDE
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # -----------------------------
 
-# Executable
-add_executable(${PROJECT_NAME} ${SOURCES} "src/parser/xhtml/xhtml.cpp")
 
-# -----------------------------
-#           BUILDS
-if(MSVC)
-    # Use /O2 for optimization and /GL for whole program optimization (only for MSVC).
-    # /MD - Use Multi-threaded DLL RTL (only if not in Debug mode).
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /GL /MD")
-else()
-    # For GCC and Clang, set -O3 for maximum optimization and -DNDEBUG to disable asserts.
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG")
-endif()
 
-# Set the build type if it is not specified.
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
+# Add executable
+add_executable(hiweb ${SOURCES})
+
+# Include directories
+target_include_directories(hiweb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+
+
+
 
 # -----------------------------
 #          LINKING
 if(MSVC)
-    #target_link_libraries(${PROJECT_NAME})
+    target_link_libraries(${PROJECT_NAME})
 elseif(APPLE)
     # Specific libraries for macOS
     target_link_libraries(${PROJECT_NAME})

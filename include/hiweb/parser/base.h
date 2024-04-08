@@ -3,169 +3,28 @@
  * @brief Header file defining the base classes for the HiGUI parser module.
  *
  * This file contains the class definitions for the HiGUI project's parser module.
- * It includes the definitions for Tag, DOM, ParserBase, and ParsingException classes,
+ * It includes the definitions for ParserBase and ParsingException classes,
  * which are integral to the HiGUI parsing system. These classes provide the
- * framework for parsing, managing, and handling exceptions for HTML-like structured data,
+ * framework for parsing and handling exceptions for HTML-like structured data,
  * facilitating the construction and manipulation of a document object model (DOM).
  *
- * @author setbe
- * @version 24.2
- * @date 10/2/2024
+ * @author setbe <max@lafk.eu>
+ * @version 24.4
+ * @date 1/4/2024
  */
 
-#ifndef HiGUI_PARSER_BASE_H
-#define HiGUI_PARSER_BASE_H
+#ifndef HiWEB_PARSER_BASE_H
+#define HiWEB_PARSER_BASE_H
 
 #include <memory>
-#include <vector>
-#include <list>
+#include <list>         // for Parser::findAll()
 #include <string>
-#include <stdexcept>
-#include <map>
+#include <stdexcept>    // for ParsingException's logic
  
+#include "hiweb/dom.h"
 
-
-namespace hi::web::impl
+namespace hi::web
 {
-    /**
-     * @class Tag
-     * @brief Represents a tag in the parsed structure.
-     *
-     * This class encapsulates the properties of a tag, including its name,
-     * id, classes, children, and attributes. It provides methods to manipulate
-     * these properties and manage the hierarchy of tags within a parsed document.
-     * Tags can represent elements similar to those in HTML, facilitating the
-     * representation and manipulation of structured data.
-     */
-    class Tag
-    {
-    public:
-        using Pointer = std::shared_ptr<Tag>;
-        using WeakPointer = std::weak_ptr<Tag>;
-
-        /**
-         * @brief Construct a new Tag object with a specified name.
-         * @param name The name of the tag.
-         */
-        explicit Tag(const std::string& name);
-
-        // Setters
-        /**
-         * @brief Sets the name of the tag.
-         * @param name New name for the tag.
-         */
-        void setName(const std::string& name) noexcept;
-
-        /**
-         * @brief Sets the ID of the tag.
-         * @param id New ID for the tag.
-         */
-        void setId(const std::string& id) noexcept;
-
-        /**
-         * @brief Sets the class of the tag.
-         * @param class_val New class value for the tag.
-         */
-        void setClass(const std::string& class_val) noexcept;
-
-        /**
-         * @brief Adds a child tag to this tag.
-         * @param child Pointer to the child tag to be added.
-         */
-        void addChild(Pointer child) noexcept;
-
-        /**
-         * @brief Sets an attribute for the tag.
-         * @param key Attribute name.
-         * @param value Attribute value.
-         */
-        void setAttribute(const std::string& key, const std::string& value) noexcept;
-
-        /**
-         * @brief Sets the text content for the tag.
-         * @param text Text to be set for the tag.
-         */
-        void setText(const std::string& text) noexcept;
-        // -------
-
-        // Getters
-        /**
-         * @brief Gets the name of the tag.
-         * @return Name of the tag.
-         */
-        std::string getName() const noexcept;
-
-        /**
-         * @brief Gets the ID of the tag.
-         * @return ID of the tag.
-         */
-        std::string getId() const noexcept;
-
-        /**
-         * @brief Gets the classes assigned to the tag.
-         * @return Vector of class names.
-         */
-        std::vector<std::string> getClasses() const noexcept;
-
-        /**
-         * @brief Gets the attributes of the tag.
-         * @return Map of attribute names to values.
-         */
-        std::map<std::string, std::string> getAttributes() const noexcept;
-
-        /**
-         * @brief Gets the children of the tag.
-         * @return Vector of pointers to the child tags.
-         */
-        std::vector<Pointer> getChildren() const noexcept;
-
-        /**
-         * @brief Gets the text content of the tag.
-         * @return Text content of the tag.
-         */
-        std::string getText() const noexcept;
-        // -------
-
-    private:
-        std::string name; ///< Name of the tag.
-        std::string id; ///< ID of the tag.
-        std::string text; ///< Text content of the tag.
-        std::vector<std::string> classes; ///< Classes assigned to the tag.
-        std::map<std::string, std::string> attributes; ///< Attributes of the tag.
-        std::vector<Pointer> children; ///< Children of the tag.
-        WeakPointer parent; ///< Parent of the tag.
-    };
-
-
-    /**
-     * @class DOM
-     * @brief Manages a tree of Tag objects.
-     *
-     * This class provides functionality to manipulate and navigate a tree of Tag objects,
-     * representing the structured hierarchy of a parsed document. It supports operations
-     * such as setting the root tag, printing the structure of the tag tree, and accessing
-     * the root tag of the document.
-     */
-    class DOM
-    {
-    public:
-        /**
-         * @brief Sets the root tag of the document.
-         * @param root The root tag to be set for the document.
-         */
-        void setRoot(Tag::Pointer root) noexcept { this->root = root; }
-
-        /**
-         * @brief Retrieves the root tag of the document.
-         * @return The root tag of the document.
-         */
-        Tag::Pointer getRoot() const noexcept { return root; };
-
-    private:
-        mutable Tag::Pointer root; ///< The root of the tag tree, mutable to allow modification in const methods.
-    };
-
-
     /**
      * @class ParserBase
      * @brief Abstract base class for parsers in the HiGUI system.
@@ -273,4 +132,4 @@ namespace hi::web::impl
 
 } // namespace hi::parser
 
-#endif // HiGUI_PARSER_BASE_H
+#endif // HiWEB_PARSER_BASE_H

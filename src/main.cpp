@@ -3,13 +3,17 @@
 #include <string>
 
 using namespace hi;
-using namespace hi::parser::markup;
 
 int main(int argc, char* argv[]) 
 {
-    parser::Parser::Pointer xml = parser::Create(DocumentType::XML);
-    xml->read("text.xml");
-    xml->getDOM().getRoot()->ge
+    std::unordered_map<std::string, std::string> attr;
+    attr["href"] = "https://google.com";
+    attr["attribute"] = "some value";
+
+    web::Tag tag("div", "hello world", "identifier", { "class1", "class2" }, attr);
+
+    printf("%s\n", tag.innerMarkup().c_str());
+
 
     return 0;
 }

@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace hi::web::impl::xml
+namespace hi::web::xml
 {
 	class XML : public Parser
 	{

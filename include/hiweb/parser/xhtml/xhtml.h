@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace hi::web::impl::xhtml
+namespace hi::web::xhtml
 {
 	class XHTML : public Parser
 	{

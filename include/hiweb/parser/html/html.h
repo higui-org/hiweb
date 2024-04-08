@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace hi::web::impl::html
+namespace hi::web::html
 {
 	class HTML : public Parser
 	{

@@ -1,6 +1,6 @@
 #include "hiweb/parser/base.h"
 
-namespace hi::parser
+namespace hi::web
 {
 
 
@@ -62,87 +62,6 @@ void Parser::findAllRecursive(
         findAllRecursive(child, class_val, result);
     }
 }
-
-
-/*
-        class Tag
-    setters   getters
-            |
-            |
-           \ /
-
-*/
-
-// setters
-void Tag::setName(const std::string& name) noexcept
-{
-    this->name = name;
-}
-
-void Tag::setId(const std::string& id) noexcept
-{
-    this->id = id;
-}
-
-void Tag::setClass(const std::string& class_val) noexcept
-{
-    classes.push_back(class_val);
-}
-
-void Tag::addChild(Tag::Pointer child) noexcept
-{
-    children.push_back(child);
-}
-
-void Tag::setAttribute(const std::string& key, const std::string& value) noexcept
-{
-    attributes[key] = value;
-}
-
-void Tag::setText(const std::string& text) noexcept
-{
-    this->text = text;
-}
-
-
-// getters
-std::string Tag::getName() const noexcept
-{
-    return name;
-}
-
-std::string Tag::getId() const noexcept
-{
-    return id;
-}
-
-std::vector<std::string> Tag::getClasses() const noexcept
-{
-    return classes;
-}
-
-std::map<std::string, std::string> Tag::getAttributes() const noexcept
-{
-    return attributes;
-}
-
-std::vector<Tag::Pointer> Tag::getChildren() const noexcept
-{
-    return children;
-}
-
-std::string Tag::getText() const noexcept
-{
-    return text;
-}
-/*
-               / \
-                |
-                |
-        setters   getters
-            class Tag
-*/
-
 
 
 /*

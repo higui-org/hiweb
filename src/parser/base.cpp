@@ -22,30 +22,30 @@ bool Parser::write(const Tag::Pointer& where, const Tag& tag) {
 
 Tag::Pointer Parser::find(const std::string& id) const
 {
-    return findRecursive(dom.getRoot(), id);
+    return _findRecursive(_dom.getRoot(), id);
 }
 
 std::list<Tag::Pointer> Parser::findAll(const std::string& class_val) const
 {
     std::list<Tag::Pointer> result;
-    findAllRecursive(dom.getRoot(), class_val, result);
+    _findAllRecursive(_dom.getRoot(), class_val, result);
     return result;
 }
 
-Tag::Pointer Parser::findRecursive(Tag::Pointer current, const std::string& id) {
+Tag::Pointer Parser::_findRecursive(Tag::Pointer current, const std::string& id) {
     if (!current) return nullptr;
 
     if (current->getId() == id) return current;
 
     for (const auto& child : current->getChildren())
     {
-        Tag::Pointer result = findRecursive(child, id);
+        Tag::Pointer result = _findRecursive(child, id);
         if (result) return result;
     }
     return nullptr;
 }
 
-void Parser::findAllRecursive(
+void Parser::_findAllRecursive(
     Tag::Pointer current,
     const std::string& class_val,
     std::list<Tag::Pointer>& result) {
@@ -59,7 +59,7 @@ void Parser::findAllRecursive(
 
     for (const auto& child : current->getChildren())
     {
-        findAllRecursive(child, class_val, result);
+        _findAllRecursive(child, class_val, result);
     }
 }
 
@@ -74,35 +74,35 @@ ParsingException::ParsingException(
     const std::string& filename,
     int line_number
 )
-    : filename(filename),
-    line_number(line_number)
+    : _filename(filename),
+    _line_number(line_number)
 {
-    full_message = "ParsingException was thrown";                   // "ParsingException was thrown"
+    _full_message = "ParsingException was thrown";                   // "ParsingException was thrown"
 
     if (!filename.empty())
-        full_message += " in file \"" + filename + "\"";            // " in file "<filename>""
+        _full_message += " in file \"" + filename + "\"";            // " in file "<filename>""
     if (line_number >= 0)
-        full_message += " on line " + std::to_string(line_number);  // " on line <line_number>"
+        _full_message += " on line " + std::to_string(line_number);  // " on line <line_number>"
 
-    full_message += ":\n\t" + message;      // ":<new line><tab><message>"
+    _full_message += ":\n\t" + message;      // ":<new line><tab><message>"
 
     if (!line.empty())
-        full_message += "\n\t\"" + line + "\"";                     // "<new line><tab>"line""
+        _full_message += "\n\t\"" + line + "\"";                     // "<new line><tab>"line""
 }
 
 const char* ParsingException::what() const noexcept
 {
-    return full_message.c_str();
+    return _full_message.c_str();
 }
 
 const std::string& ParsingException::getFilename() const noexcept
 {
-    return filename;
+    return _filename;
 }
 
 int ParsingException::getLineNumber() const noexcept
 {
-    return line_number;
+    return _line_number;
 }
 
 

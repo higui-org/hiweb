@@ -13,9 +13,11 @@
  * @date 1/4/2024
  */
 
+
 #ifndef HiWEB_PARSER_BASE_H
 #define HiWEB_PARSER_BASE_H
 
+#include <concepts>
 #include <memory>
 #include <list>         // for Parser::findAll()
 #include <string>
@@ -74,13 +76,13 @@ namespace hi::web
          * @brief Gets the DOM object managed by the parser.
          * @return A reference to the DOM object.
          */
-        DOM& getDOM() const noexcept { return dom; }
+        DOM& getDOM() const noexcept { return _dom; }
 
     private:
-        mutable DOM dom; ///< The DOM for managing parsed tags, mutable for const method modifications.
+        mutable DOM _dom; ///< The DOM for managing parsed tags, mutable for const method modifications.
 
-        static Tag::Pointer findRecursive(Tag::Pointer current, const std::string& id);
-        static void findAllRecursive(Tag::Pointer current, const std::string& class_val, std::list<Tag::Pointer>& result);
+        static Tag::Pointer _findRecursive(Tag::Pointer current, const std::string& id);
+        static void _findAllRecursive(Tag::Pointer current, const std::string& class_val, std::list<Tag::Pointer>& result);
     };
 
 
@@ -123,12 +125,11 @@ namespace hi::web
         int getLineNumber() const noexcept;
 
     private:
-        std::string filename; ///< The name of the file where the error occurred.
-        std::string line; ///< The markup line.
-        int line_number; ///< The line number at which the error was detected.
-        std::string full_message; ///< The full error message.
+        std::string _filename; ///< The name of the file where the error occurred.
+        std::string _line; ///< The markup line.
+        int _line_number; ///< The line number at which the error was detected.
+        std::string _full_message; ///< The full error message.
     };
-
 
 } // namespace hi::parser
 

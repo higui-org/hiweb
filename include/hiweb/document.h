@@ -104,6 +104,35 @@ namespace hi::web::document
         Week
     };
 
+    /**
+    * @class StringIndex
+    * @brief A complex structure of a string and variables in it.
+    *
+    * This structure is used to reference various textual components of the tag such as name, ID, classes, and attributes
+    * without storing multiple copies of the same strings.
+    */
+    class StringIndex
+    {
+    public:
+        StringIndex() noexcept : _off_begin(0), _off_end(0) {}
+
+        /** 
+        * @brief Gets the starting index of the substring.
+		* @return The starting index of the substring.
+        */
+        unsigned int begin() const noexcept { return _off_begin; }
+
+        /** 
+        * @brief Gets the ending index of the substring.
+        * @return The ending index of the substring.
+        */
+        unsigned int end() const noexcept { return _off_end; }
+
+    private:
+        std::string data; ///< Stores all text related to the string
+        unsigned int _off_begin; ///< Starting index of the substring
+        unsigned int _off_end;   ///< Ending index (exclusive) of the substring
+    };
 
 } // namespace hi::document
 

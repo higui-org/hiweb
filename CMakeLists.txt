@@ -1,61 +1,52 @@
+###################################################################################
+#	  ____  ____   _    ____      ____      __
+#	 |_   ||   _| (_)  |_  _|    |_  _|    [  |
+#	   | |__| |   __     \ \  /\  / / .---. | |.--.
+#	   |  __  |  [  |     \ \/  \/ / / /___\| '/''\ \
+#	  _| |  | |_  | |      \  /\  /  | \___ |  \__/ |
+#	 |____||____|[___]      \/  \/    '.__/ [__\.___'
+#
+# HiWeb licensed under MIT License
+#
+# Copyright (C) 2024 setbe <max@lafk.eu>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+###################################################################################
 
-# cmake version, c++ standard
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.7...3.16 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
 
-# project name, version
-set(PROJECT_NAME hiweb)
-project(${PROJECT_NAME} VERSION 24.4)
+project(HiWeb VERSION 24.4)
 
 
-
-
-# -----------------------------
-#          SOURCES
 set(SOURCES
-    src/test.cpp
-    src/web.cpp
-    src/dom.cpp
-    src/parser/base.cpp
-
-    # Markups
-    src/parser/html/html.cpp    # html
-    src/parser/xhtml/xhtml.cpp  # xhtml
-    src/parser/xml/xml.cpp      # xml
-
-    # Styles
-    src/parser/css/css.cpp      # css
-)
-# -----------------------------
-
-set(TEST_SOURCES
-    src/test.cpp
+    src/main.c
 )
 
+add_executable(HiWeb ${SOURCES})
+target_include_directories(HiWeb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-
-# Add executable
-add_executable(hiweb ${SOURCES})
-# Include directories
-target_include_directories(hiweb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-
-add_executable(hiweb_test ${TEST_SOURCES})
-target_include_directories(hiweb_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-
-# -----------------------------
-#          LINKING
 if(MSVC)
-    target_link_libraries(${PROJECT_NAME})
+    target_link_libraries(HiWeb)
 elseif(APPLE)
-    # Specific libraries for macOS
-    target_link_libraries(${PROJECT_NAME})
+    target_link_libraries(HiWeb)
 else()
-    # For Linux and other Unix-like systems
-    target_link_libraries(${PROJECT_NAME})
+    target_link_libraries(HiWeb)
 endif()
-# -----------------------------
-
-enable_testing()
-add_test(NAME HiWebTest COMMAND hiweb_test)

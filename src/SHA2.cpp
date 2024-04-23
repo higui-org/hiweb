@@ -1,4 +1,4 @@
-#include "hiweb/CryptoAlgorithm.h"
+#include "hiweb/SHA2.h"
 #include <iomanip>
 #include <cstdint>
 
@@ -11,7 +11,7 @@ namespace hiweb
  * @param data The vector of unsigned chars to convert.
  * @return The hexadecimal string representation of the input data.
  */
-std::string CryptoAlgorithm::ToHexString(const std::vector<unsigned char>& data) 
+std::string SHA2::ToHexString(const std::vector<unsigned char>& data) 
 {
     std::stringstream hexstream;
     hexstream << std::hex << std::setfill('0');
@@ -22,26 +22,28 @@ std::string CryptoAlgorithm::ToHexString(const std::vector<unsigned char>& data)
     return hexstream.str();
 }
 
-std::vector<unsigned char> CryptoAlgorithm::Encrypt() noexcept
+std::unique_ptr<SHA2> SHA2Factory::CreateSHA2(Type type) 
 {
-    Initialize();
-    Pad();
-    Compress();
-    return Finalize();
-}
+        switch (type) 
+        {
+        case Type::SHA256:
+            return std::make_unique<SHA256>();
+        default:
+            throw std::invalid_argument("Unsupported SHA2 type");
+        }
+    }
 
 /**
  * Initializes the SHA256 algorithm by setting the initial digest and resizing the working array.
  */
-void SHA256::Initialize() noexcept
+void SHA256::Initialize(const std::vector<unsigned char>& message) noexcept
 {
+    this->message = message;
     digest = 
     {
     0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
     };
-        
-    W.resize(64);
 }
 
 /**
@@ -83,13 +85,13 @@ void SHA256::Pad() noexcept
  * 
  * @note This function does not throw any exceptions.
  */
-void SHA256::Compress() noexcept
+void SHA256::Compress(const std::vector<unsigned char>& block) noexcept
 {
     std::array<unsigned int, 64> words;
-    // Convert message bytes into 32-bit words for processing
+    // Convert block bytes into 32-bit words for processing
     for (int i = 0; i < 16; ++i) 
     {
-        words[i] = (message[4 * i] << 24) | (message[4 * i + 1] << 16) | (message[4 * i + 2] << 8) | message[4 * i + 3];
+        words[i] = (block[4 * i] << 24) | (block[4 * i + 1] << 16) | (block[4 * i + 2] << 8) | block[4 * i + 3];
     }
 
     // Expanding words

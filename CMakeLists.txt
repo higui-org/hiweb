@@ -32,21 +32,30 @@
 
 cmake_minimum_required(VERSION 3.7...3.16 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(HiWeb VERSION 24.4)
 
 
 set(SOURCES
-    src/main.c
+
+    src/main.cpp
+    src/CryptoAlgorithm.cpp
 )
 
 add_executable(HiWeb ${SOURCES})
 target_include_directories(HiWeb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if(MSVC)
-    target_link_libraries(HiWeb)
+    # Compiler: MSVC
+    target_compile_options(HiWeb PRIVATE /O2)
 elseif(APPLE)
-    target_link_libraries(HiWeb)
+    # Compiler: Clang
+    target_compile_options(HiWeb PRIVATE -O3)
 else()
-    target_link_libraries(HiWeb)
+    # Compilers: GCC, Clang
+    target_compile_options(HiWeb PRIVATE -O3)
 endif()
+
+# linking libs
+target_link_libraries(HiWeb)

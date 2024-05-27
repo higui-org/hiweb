@@ -2,4 +2,6 @@
 .vs/
 build/
 out/
-CMakeSettings.json
+
+TypeNative/CMakeFiles
+TypeNative/CMakeCache.txt

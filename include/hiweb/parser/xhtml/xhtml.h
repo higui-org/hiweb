@@ -1,5 +1,0 @@
-#ifndef HiWeb_PARSER_XHTML_XHTML_H
-#define HiWeb_PARSER_XHTML_XHTML_H
-
-
-#endif // HiWeb_PARSER_XHTML_XHTML_H

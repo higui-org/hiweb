@@ -1,17 +1,12 @@
-#ifndef SEMANTIC_H
-#define SEMANTIC_H
+#ifndef SEMA_H
+#define SEMA_H
 
 #include "AST.h"
 #include "Lexer.h"
 
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/ADT/StringSet.h"
-
-class Semantic
-{
+class Sema {
 public:
-	bool Check(AST* tree);
+  bool semantic(AST *Tree);
+};
 
-}; // class Semantic
-
-#endif // SEMANTIC_H
+#endif

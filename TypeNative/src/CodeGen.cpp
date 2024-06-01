@@ -6,9 +6,11 @@
 
 using namespace llvm;
 
-namespace
-{
-	class ToIRVisitor : public ASTVisitor
+/**
+ * This class is a visitor that traverses the AST and generates LLVM IR.
+*/
+namespace {
+class ToIRVisitor : public ASTVisitor
 	{
 		Module* module_;
 		IRBuilder<> builder_;
@@ -16,6 +18,7 @@ namespace
 		Type* int32_type_;
 		PointerType* ptr_type_;
 		Constant* int32_zero_;
+
 		Value* value_;
 		StringMap<Value*> name_map_;
 
@@ -29,7 +32,7 @@ namespace
 			int32_zero_ = ConstantInt::get(int32_type_, 0);
 		}
 
-		void Run(AST* tree)
+		void run(AST* tree)
 		{
 			FunctionType* main_func_type = FunctionType::get(
 				int32_type_, {int32_type_, ptr_type_}, false);
@@ -42,7 +45,7 @@ namespace
 
 			builder_.SetInsertPoint(basic_block);
 
-			tree->Accept(*this);
+			tree->accept(*this);
 
 			FunctionType* calc_write_func_type = FunctionType::get(
 				void_type_, {int32_type_}, false);
@@ -55,7 +58,7 @@ namespace
 			builder_.CreateRet(int32_zero_);
 		}
 
-		virtual void Visit(WithDecl& node) override
+		virtual void visit(WithDecl& node) override
 		{
 			FunctionType* read_func_type =
 				FunctionType::get(int32_type_, { ptr_type_ }, false);
@@ -84,37 +87,37 @@ namespace
 				name_map_[var] = call_inst;
 			}
 
-			node.getExpr()->Accept(*this);
+			node.getExpr()->accept(*this);
 		}
 
-		virtual void Visit(Factor& node) override
+		virtual void visit(Factor& node) override
 		{
-			if (node.getKind() == Factor::Kind::Ident)
+			if (node.getKind() == Factor::Ident)
 			{
-				value_ = name_map_[node.getValue()];
+				value_ = name_map_[node.getVal()];
 			}
 			else
 			{
 				int int_value;
-				node.getValue().getAsInteger(10, int_value);
+				node.getVal().getAsInteger(10, int_value);
 				value_ = ConstantInt::get(int32_type_, int_value, true);
 			}
 		}
 
-		virtual void Visit(BinaryOp& node) override
+		virtual void visit(BinaryOp& node) override
 		{
-			node.getLHS()->Accept(*this);
+			node.getLeft()->accept(*this);
 			Value* left = value_;
 
-			node.getRHS()->Accept(*this);
+			node.getRight()->accept(*this);
 			Value* right = value_;
 
 			switch (node.getOperator())
 			{
-			case BinaryOp::Operator::Add:
+			case BinaryOp::Operator::Plus:
 				value_ = builder_.CreateNSWAdd(left, right);
 				break;
-			case BinaryOp::Operator::Sub:
+			case BinaryOp::Operator::Minus:
 				value_ = builder_.CreateNSWSub(left, right);
 				break;
 			case BinaryOp::Operator::Mul:
@@ -126,15 +129,12 @@ namespace
 			}
 		}
 	};
-
 } // namespace
 
-
-void CodeGen::Generate(AST* tree)
-{
-	LLVMContext context;
-	Module* module = new Module("calc.expr", context);
-	ToIRVisitor visitor(module);
-	visitor.Run(tree);
-	module->print(outs(), nullptr);
+void CodeGen::compile(AST *Tree) {
+  LLVMContext Ctx;
+  Module *M = new Module("calc.expr", Ctx);
+  ToIRVisitor ToIR(M);
+  ToIR.run(Tree);
+  M->print(outs(), nullptr);
 }

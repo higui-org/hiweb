@@ -6,63 +6,60 @@
 
 class Lexer;
 
-class Token
-{
-	friend class Lexer;
+class Token {
+  friend class Lexer;
 
 public:
-	enum class Kind : unsigned short
-	{
-		EndOfInput,      // end of input
-		Unknown,  // unknown token
-		Ident,	  // ident
-		Number,   // number
-		Comma,    // comma ,
-		Colon,    // colon :
-		Plus,	  // plus +
-		Minus,	  // minus -
-		Star,	  // star *
-		Slash,	  // slash /
-		LParen,  // left parenthesis (
-		RParen,  // right parenthesis )
-		With,  // with
-	};
+  enum TokenKind : unsigned short {
+    eoi,
+    unknown,
+    ident,
+    number,
+    comma,
+    colon,
+    plus,
+    minus,
+    star,
+    slash,
+    l_paren,
+    r_paren,
+    KW_with
+  };
 
 private:
-	Kind kind_;
-	llvm::StringRef text_;
-	
+  TokenKind Kind;
+  llvm::StringRef Text;
+
 public:
-	Kind getKind() const { return kind_; }
-	llvm::StringRef getText() const { return text_; }
+  TokenKind getKind() const { return Kind; }
+  llvm::StringRef getText() const {
+    return Text;
+  }
 
-	bool is(Kind k) const { return kind_ == k; }
-	bool isOneOf(Kind k1, Kind k2) const { return is(k1) || is(k2); }
-
-	template <typename... Ts>
-	bool isOneOf(Kind k1, Kind k2, Ts... ks) const
-	{
-		return is(k1) || isOneOf(k2, ks...);
-	}
+  bool is(TokenKind K) const { return Kind == K; }
+  bool isOneOf(TokenKind K1, TokenKind K2) const {
+    return is(K1) || is(K2);
+  }
+  template <typename... Ts>
+  bool isOneOf(TokenKind K1, TokenKind K2, Ts... Ks) const {
+    return is(K1) || isOneOf(K2, Ks...);
+  }
 };
 
-class Lexer
-{
-	const char* buffer_start_;
-	const char* buffer_ptr_;
+class Lexer {
+  const char *BufferStart;
+  const char *BufferPtr;
 
 public:
-	Lexer(const llvm::StringRef& buffer)
-	{
-		buffer_start_ = buffer.begin();
-		buffer_ptr_ = buffer_start_;
-	}
+  Lexer(const llvm::StringRef &Buffer) {
+    BufferStart = Buffer.begin();
+    BufferPtr = BufferStart;
+  }
 
-	void Next(Token& token);
+  void next(Token &token);
 
 private:
-	void FormToken(Token& result, const char* token_end, Token::Kind kind);
+  void formToken(Token &Result, const char *TokEnd,
+                 Token::TokenKind Kind);
 };
-
-
-#endif // LEXER_H
+#endif

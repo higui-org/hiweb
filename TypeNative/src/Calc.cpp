@@ -1,42 +1,33 @@
 #include "CodeGen.h"
 #include "Parser.h"
 #include "Semantic.h"
-
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/raw_ostream.h"
 
-static llvm::cl::opt<std::string> input(
-	llvm::cl::Positional,
-	llvm::cl::desc("<input expression>"), 
-	llvm::cl::Required
-);
+static llvm::cl::opt<std::string>
+    Input(llvm::cl::Positional,
+          llvm::cl::desc("<input expression>"),
+          llvm::cl::init(""));
 
-int main(int argc, char** argv)
-{
-	llvm::InitLLVM X(argc, argv);
+int main(int argc, const char **argv) {
+  llvm::InitLLVM X(argc, argv);
+  llvm::cl::ParseCommandLineOptions(
+      argc, argv, "calc - the expression compiler\n");
 
-	llvm::cl::ParseCommandLineOptions(argc, argv);
-
-	Lexer lexer(input);
-	Parser parser(lexer);
-	std::unique_ptr<AST> tree = parser.Parse();
-
-	if (!tree || parser.HasError())
-	{
-		llvm::errs() << "Error: failed to parse input. Syntax errors occured\n";
-		return 1;
-	}
-
-	Semantic semantic;
-	if (semantic.Check(tree.get()))
-	{
-		llvm::errs() << "Error: failed to check semantics\n";
-		return 1;
-	}
-
-	CodeGen codegen;
-	codegen.Generate(tree.get());
-
-	return 0;
+  Lexer Lex(Input);
+  Parser Parser(Lex);
+  AST *Tree = Parser.parse();
+  if (!Tree || Parser.hasError()) {
+    llvm::errs() << "Syntax errors occured\n";
+    return 1;
+  }
+  Sema Semantic;
+  if (Semantic.semantic(Tree)) {
+    llvm::errs() << "Semantic errors occured\n";
+    return 1;
+  }
+  CodeGen CodeGenerator;
+  CodeGenerator.compile(Tree);
+  return 0;
 }

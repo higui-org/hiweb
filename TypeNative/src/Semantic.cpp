@@ -1,76 +1,62 @@
 #include "Semantic.h"
+#include "llvm/ADT/StringSet.h"
+#include "llvm/Support/raw_ostream.h"
 
-namespace
-{
-	class DeclChecker : public ASTVisitor
-	{
-		llvm::StringSet<> scope_;
-		bool has_error_;
+namespace {
+class DeclCheck : public ASTVisitor {
+  llvm::StringSet<> Scope;
+  bool HasError;
 
-		enum class ErrorType
-		{
-			Twice, 
-			Not,
-		};
+  enum ErrorType { Twice, Not };
 
-		void Error(ErrorType type, const llvm::StringRef var_name)
-		{
-			llvm::errs() << "Variable " << var_name << " "
-				<< (type == ErrorType::Twice ? "declared twice" : "not declared") << "\n";
+  void error(ErrorType ET, llvm::StringRef V) {
+    llvm::errs() << "Variable " << V << " "
+                 << (ET == Twice ? "already" : "not")
+                 << " declared\n";
+    HasError = true;
+  }
 
-			has_error_ = true;
-		}
+public:
+  DeclCheck() : HasError(false) {}
 
-	public:
-		DeclChecker() : has_error_(false) {}
+  bool hasError() { return HasError; }
 
-		bool HasError() const { return has_error_; }
+  virtual void visit(Factor &Node) override {
+    if (Node.getKind() == Factor::Ident) {
+      if (Scope.find(Node.getVal()) == Scope.end())
+        error(Not, Node.getVal());
+    }
+  };
 
-		virtual void Visit(Factor& node) override
-		{
-			if (node.getKind() == Factor::Kind::Ident)
-			{
-				if (scope_.find(node.getValue()) == scope_.end())
-					Error(ErrorType::Not, node.getValue());
-			}
-		}
+  virtual void visit(BinaryOp &Node) override {
+    if (Node.getLeft())
+      Node.getLeft()->accept(*this);
+    else
+      HasError = true;
+    if (Node.getRight())
+      Node.getRight()->accept(*this);
+    else
+      HasError = true;
+  };
 
-		virtual void Visit(BinaryOp& node) override
-		{
-			if (node.getLHS())
-				node.getLHS()->Accept(*this);
-			else
-				has_error_ = true;
+  virtual void visit(WithDecl &Node) override {
+    for (auto I = Node.begin(), E = Node.end(); I != E;
+         ++I) {
+      if (!Scope.insert(*I).second)
+        error(Twice, *I);
+    }
+    if (Node.getExpr())
+      Node.getExpr()->accept(*this);
+    else
+      HasError = true;
+  };
+};
+}
 
-			if (node.getRHS())
-				node.getRHS()->Accept(*this);
-			else
-				has_error_ = true;
-		}
-
-		virtual void Visit(WithDecl& node) override
-		{
-			for (auto i = node.begin(), e = node.end(); i != e; ++i)
-			{
-				if (!scope_.insert(*i).second)
-					Error(ErrorType::Twice, *i);
-			}
-
-			if (node.getExpr())
-				node.getExpr()->Accept(*this);
-			else
-				has_error_ = true;
-		}
-	}; // class DeclChecker
-
-} // namespace
-
-bool Semantic::Check(AST* tree)
-{
-	if (!tree)
-		return false;
-
-	DeclChecker checker;
-	tree->Accept(checker);
-	return checker.HasError();
+bool Sema::semantic(AST *Tree) {
+  if (!Tree)
+    return false;
+  DeclCheck Check;
+  Tree->accept(Check);
+  return Check.hasError();
 }

@@ -1,5 +1,5 @@
-#ifndef ABSTRACT_SYNTAX_TREE_H
-#define ABSTRACT_SYNTAX_TREE_H
+#ifndef AST_H
+#define AST_H
 
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
@@ -10,116 +10,78 @@ class Factor;
 class BinaryOp;
 class WithDecl;
 
-class ASTVisitor
-{
+class ASTVisitor {
 public:
-	virtual void Visit(AST& ast) {};
-	virtual void Visit(Expr& expr) {};
-	virtual void Visit(Factor& factor) = 0;
-	virtual void Visit(BinaryOp& binaryOp) = 0;
-	virtual void Visit(WithDecl& withDecl) = 0;
+  virtual void visit(AST &){};
+  virtual void visit(Expr &){};
+  virtual void visit(Factor &) = 0;
+  virtual void visit(BinaryOp &) = 0;
+  virtual void visit(WithDecl &) = 0;
+};
 
-}; // class ASTVisitor
-
-class AST
-{
+class AST {
 public:
-	virtual ~AST() {}
+  virtual ~AST() {}
+  virtual void accept(ASTVisitor &V) = 0;
+};
 
-	virtual void Accept(ASTVisitor& visitor) = 0;
-
-}; // class AST
-
-class Expr : public AST
-{
+class Expr : public AST {
 public:
-	Expr() {}
+  Expr() {}
+};
 
-}; // class Expr
-
-class Factor : public Expr
-{
+class Factor : public Expr {
 public:
-	enum class Kind
-	{
-		Ident,
-		Number,
-	};
+  enum ValueKind { Ident, Number };
 
 private:
-	Kind kind_;
-	llvm::StringRef value_;
+  ValueKind Kind;
+  llvm::StringRef Val;
 
 public:
-	Factor(Kind kind, llvm::StringRef value)
-		: kind_(kind), value_(value)
-	{}
+  Factor(ValueKind Kind, llvm::StringRef Val)
+      : Kind(Kind), Val(Val) {}
+  ValueKind getKind() { return Kind; }
+  llvm::StringRef getVal() { return Val; }
+  virtual void accept(ASTVisitor &V) override {
+    V.visit(*this);
+  }
+};
 
-	Kind getKind() const { return kind_; }
-	llvm::StringRef getValue() const { return value_; }
-
-	virtual void Accept(ASTVisitor& visitor) override
-	{
-		visitor.Visit(*this);
-	}
-
-}; // class Factor
-
-class BinaryOp : public Expr
-{
+class BinaryOp : public Expr {
 public:
-	enum class Operator
-	{
-		Add,
-		Sub,
-		Mul,
-		Div,
-	};
+  enum Operator { Plus, Minus, Mul, Div };
 
 private:
-	Operator op_;	// operator
-	Expr* lhs_;		// left hand side
-	Expr* rhs_;		// right hand side
+  Expr *Left;
+  Expr *Right;
+  Operator Op;
 
 public:
-	BinaryOp(Operator op, Expr* lhs, Expr* rhs)
-		: op_(op), lhs_(lhs), rhs_(rhs)
-	{}
+  BinaryOp(Operator Op, Expr *L, Expr *R)
+      : Op(Op), Left(L), Right(R) {}
+  Expr *getLeft() { return Left; }
+  Expr *getRight() { return Right; }
+  Operator getOperator() { return Op; }
+  virtual void accept(ASTVisitor &V) override {
+    V.visit(*this);
+  }
+};
 
-	Operator getOperator() const { return op_; }
-	Expr* getLHS() const { return lhs_; }
-	Expr* getRHS() const { return rhs_; }
-
-	virtual void Accept(ASTVisitor& visitor) override
-	{
-		visitor.Visit(*this);
-	}
-
-}; // class BinaryOp
-
-class WithDecl : public AST
-{
-	using VarVector = llvm::SmallVector<llvm::StringRef, 8>;
-
-	VarVector vars_;
-	Expr* expr_;
+class WithDecl : public AST {
+  using VarVector = llvm::SmallVector<llvm::StringRef, 8>;
+  VarVector Vars;
+  Expr *E;
 
 public:
-	WithDecl(VarVector vars, Expr* expr)
-		: vars_(vars), expr_(expr)
-	{}
-
-	VarVector::const_iterator begin() const { return vars_.begin(); }
-	VarVector::const_iterator end() const { return vars_.end(); }
-
-	const VarVector& getVars() const { return vars_; }
-	Expr* getExpr() const { return expr_; }
-
-	virtual void Accept(ASTVisitor& visitor) override
-	{
-		visitor.Visit(*this);
-	}
-
-}; // class WithDecl
-
-#endif // ABSTRACT_SYNTAX_TREE_H
+  WithDecl(llvm::SmallVector<llvm::StringRef, 8> Vars,
+           Expr *E)
+      : Vars(Vars), E(E) {}
+  VarVector::const_iterator begin() { return Vars.begin(); }
+  VarVector::const_iterator end() { return Vars.end(); }
+  Expr *getExpr() { return E; }
+  virtual void accept(ASTVisitor &V) override {
+    V.visit(*this);
+  }
+};
+#endif

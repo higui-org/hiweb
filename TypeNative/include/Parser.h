@@ -1,54 +1,48 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include "Lexer.h"
 #include "AST.h"
-
+#include "Lexer.h"
 #include "llvm/Support/raw_ostream.h"
 
-class Parser
-{
-    Lexer& lexer_;
-    Token token_;
-    bool has_error_;
+class Parser {
+  Lexer &Lex;
+  Token Tok;
+  bool HasError;
 
-    void Error(const std::string& message)
-    {
-        llvm::errs() << "Error: " << message << " at token: " << token_.getText() << "\n";
-        has_error_ = true;
+  void error() {
+    llvm::errs() << "Unexpected: " << Tok.getText() << "\n";
+    HasError = true;
+  }
+
+  void advance() { Lex.next(Tok); }
+
+  bool expect(Token::TokenKind Kind) {
+    if (!Tok.is(Kind)) {
+      error();
+      return true;
     }
+    return false;
+  }
 
-    void Advance() { lexer_.Next(token_); }
+  bool consume(Token::TokenKind Kind) {
+    if (expect(Kind))
+      return true;
+    advance();
+    return false;
+  }
 
-    bool Expect(Token::Kind kind)
-    {
-        if (token_.getKind() != kind)
-        {
-            Error("Unexpected token");
-            return true;
-        }
-        return false;
-    }
-
-    bool Consume(Token::Kind kind)
-    {
-        if (Expect(kind))
-            return true;
-        Advance();
-        return false;
-    }
-
-    std::unique_ptr<AST> ParseCalc();
-    std::unique_ptr<Expr> ParseExpr();
-    std::unique_ptr<Expr> ParseTerm();
-    std::unique_ptr<Expr> ParseFactor();
+  AST *parseCalc();
+  Expr *parseExpr();
+  Expr *parseTerm();
+  Expr *parseFactor();
 
 public:
-    Parser(Lexer& lexer) : lexer_(lexer), has_error_(false) { Advance(); }
+  Parser(Lexer &Lex) : Lex(Lex), HasError(false) {
+    advance();
+  }
+  AST *parse();
+  bool hasError() { return HasError; }
+};
 
-    bool HasError() const { return has_error_; }
-
-    std::unique_ptr<AST> Parse();
-}; // class Parser
-
-#endif // PARSER_H
+#endif

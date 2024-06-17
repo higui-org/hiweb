@@ -1,33 +1,23 @@
-#================================================================================#
-#             ____  ____   _    ____      ____      __       _____               #
-#            |_   ||   _| (_)  |_  _|    |_  _|    [  |     \     /              #
-#              | |__| |   __     \ \  /\  / / .---. | |.--.  \   /               #
-#              |  __  |  [  |     \ \/  \/ / / /___\| '/''\ \ \_/                #
-#             _| |  | |_  | |      \  /\  /  | \___ |  \__/ |  _                 #
-#            |____||____|[___] ()   \/  \/    '.__/ [__\.___' (_)                #
-#                              `                                                 #
-#================================================================================#
-#                                                                                #
-# HiWeb licensed under MIT License                                               #
-#                                                                                #
-# Copyright (C) 2024 setbe <max@lafk.eu>                                         #
-#                                                                                #
-# Permission is hereby granted, free of charge, to any person obtaining a copy   #
-# of this software and associated documentation files (the "Software"), to deal  #
-# in the Software without restriction, including without limitation the rights   #
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      #
-# copies of the Software, and to permit persons to whom the Software is          #
-# furnished to do so, subject to the following conditions:                       #
-#                                                                                #
-# The above copyright notice and this permission notice shall be included in all #
-# copies or substantial portions of the Software.                                #
-#                                                                                #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     #
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       #
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    #
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         #
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  #
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  #
-# SOFTWARE.                                                                      #
-#                                                                                #
-#================================================================================#
+Copyright (C) 2024 setbe <max@lafk.eu>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+1. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software that are modified.
+
+2. For unmodified copies of the Software, the inclusion of the copyright notice and this permission notice is not required.
+
+3. Modified copies of the Software must include a notice stating that the Software was originally created by setbe and has been modified. The notice should be in the following format:
+   "This software is based on original work by setbe (Copyright (C) 2024 setbe <max@lafk.eu>) and has been modified."
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
+ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

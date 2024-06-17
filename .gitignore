@@ -1,8 +1,13 @@
+# Visual Studio directories
 .vscode/
 .vs/
+
+# Build directories
 build/
 out/
 
-TypeNative/CMakeFiles
-TypeNative/CMakeCache.txt
-TypeNative/build
+*/CMakeFiles/
+*/CMakeCache.txt
+*/build/
+*/out/
+

@@ -1,3 +1,0 @@
-HTML STANDARD - https://html.spec.whatwg.org/multipage/
-
-HTML5 TAG LIST - https://www.tutorialrepublic.com/html-reference/html5-tags.php

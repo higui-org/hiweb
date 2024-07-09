@@ -1,15 +1,14 @@
-#include <iostream>
 #include "hi.parser/html5.h"
+#include <iostream>
 
-using namespace hiweb;
+using namespace hi;
 
-int main() 
-{
-  DOM tree;
-  Tag root(Tag::Type::Param)
-  
+int main() {
+    std::string d = "div";
+    Tag div("div");
 
     
-        
-  return 0;
+    std::cout << div.toString() << std::endl;
+
+    return 0;
 }
